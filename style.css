@@ -44,8 +44,8 @@ main{
 }
 
 #game_window{
-    height: 480px;
-    width: 720px;
+    height: 720px;
+    width: 1280px;
 
     background-color: black;
 }
