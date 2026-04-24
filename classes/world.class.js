@@ -1,23 +1,22 @@
 class World{
     playerCharacter = new PlayerCharacter(150, 160);
-    tileSize = 64;
+    tileSize = 16;
     tiles = [];
     ctx;
     canvas;
 
-    noiseDensity = 50;
+    noiseDensity = 40;
 
     constructor(canvas) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
-        this.loadTiles();
-        this.generateTiles();
+        this.generateNoiseMap(this.noiseDensity);
     };
 
     draw(){
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
         this.tiles.forEach(tile => {
-            this.ctx.drawImage(tile.image, tile.position.x, tile.position.y, this.tileSize, this.tileSize);
+            this.ctx.drawImage(tile.image, tile.position.x, tile.position.y, 64, 64);
         });
         this.ctx.drawImage(this.playerCharacter.image, this.playerCharacter.position.x, this.playerCharacter.position.y, 200, 300);
         self = this;
@@ -25,35 +24,40 @@ class World{
             self.draw();
         });
     };
+
     loadTiles(){
         for(let i = 0; i < this.canvas.width / this.tileSize; i++){
-            this.tiles.push(new Tile(0 + i * this.tileSize,0));
+            this.tiles.push(new GrassTile(0 + i * this.tileSize,0));
             for(let j = 0; j < this.canvas.height / this.tileSize; j++){
-                if(Math.random*100 < 30){
-                    this.tiles.push(new Tile(0 + i * this.tileSize,j * this.tileSize,45));
-                };
-                this.tiles.push(new Tile(0 + i * this.tileSize,j * this.tileSize,0));
+                this.tiles.push(new DirtTile(0 + i * this.tileSize,j * this.tileSize,0));
             };
         };
     };
+
     generateNoiseMap(density){
-        noiseMap = [];
+        let noiseMap = [];
         for(let i = 0; i < this.canvas.width / this.tileSize; i++){
-            random = (Math.random() + 0.1) * 100;
-            if(random > this.noiseDensity){
-
-            }else{
-
-            }
             for(let j = 0; j < this.canvas.height / this.tileSize; j++){
-                if(Math.random*100 < 30){
-                    this.tiles.push(new Tile(0 + i * 64,j * 64,45));
+                let random = getRandomNumber() * 100;
+                if(random > this.noiseDensity){
+                    noiseMap.push(new GrassTile(0 + i * this.tileSize,j * this.tileSize,0));
+                }else{
+                    noiseMap.push(new DirtTile(0 + i * this.tileSize,j * this.tileSize,0));
                 };
-                this.tiles.push(new Tile(0 + i * 64,j * 64,0));
             };
         };
+        this.tiles = noiseMap;
     };
-    generateTiles(){
 
+    applyCellularAutomaton(grid, count){
+        for (let i = 0; i < count; i++){
+            let tempGrid = [];
+            for(let j = 0; i < this.canvas.height / this.tileSize; i++){
+                for(let k = 0; i < this.canvas.width / this.tileSize; i++){
+
+                };
+            };
+
+        };
     };
 };
