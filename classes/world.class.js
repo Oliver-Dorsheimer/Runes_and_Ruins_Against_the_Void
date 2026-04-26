@@ -1,32 +1,51 @@
 class World{
-    playerCharacter = new PlayerCharacter(150, 160);
-    tileSize = 16;
-    tiles = [];
-    ctx;
     canvas;
-
-    noiseDensity = 40;
+    ctx;
+    playerCharacter = new PlayerCharacter(150, 160);
+    worldElements = [];
+    renderedElements = [];
+    noiseDensity = 34;
+    tileSize = 32;
+    camera = new Camera;
 
     constructor(canvas) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
-        this.tiles = this.createArray2D(this.canvas.height/this.tileSize, this.canvas.width/this.tileSize);
-        this.generateNoiseMap(this.noiseDensity, this.canvas.width/this.tileSize, this.canvas.height/this.tileSize);
-        this.applyCellularAutomaton(this.tiles, 20);
+        this.worldElements = this.applyCellularAutomaton(this.generateNoiseMap(this.noiseDensity, 256, 256), 4);
+        this.renderedElements = this.createArray2D(Math.floor(this.canvas.width/this.tileSize), Math.floor(this.canvas.height/this.tileSize));
+    };
+
+    moveCameraToPosition(x,y){
+        this.camera.position.x += x;
+        this.camera.position.y += y;
     };
 
     draw(){
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
-        this.tiles.forEach((height, index) => {
-            this.tiles[index].forEach(tile => {
-                this.ctx.drawImage(tile.image, tile.position.x, tile.position.y, 64, 64);
+        this.viewportElementsSelector(this.camera.position);
+        this.renderedElements.forEach((height, index) => {
+            this.renderedElements[index].forEach(tile => {
+                if(tile){
+                    this.ctx.drawImage(tile.image, tile.position.x - this.camera.position.x, tile.position.y - this.camera.position.y, 64, 64);
+                };
             });
         });
-        this.ctx.drawImage(this.playerCharacter.image, this.playerCharacter.position.x, this.playerCharacter.position.y, 200, 300);
+        this.ctx.drawImage(this.playerCharacter.image, this.playerCharacter.position.x - this.camera.position.x, this.playerCharacter.position.y - this.camera.position.y, 200, 300);
         self = this;
         requestAnimationFrame(function(){
             self.draw();
         });
+    };
+
+    viewportElementsSelector(position){
+        let positionX = Math.floor(position.x / this.tileSize);
+        let positionY = Math.floor(position.y / this.tileSize);
+
+        for(let i = 0; i < this.renderedElements.length; i++){
+            for(let j = 0; j < this.renderedElements[i].length; j++){
+                this.renderedElements[i][j] = this.worldElements[positionX + i][positionY + j];
+            };
+        };
     };
 
     createArray2D(width, height){
@@ -49,7 +68,7 @@ class World{
                 };
             };
         };
-        this.tiles = noiseMap;
+        return noiseMap;
     };
 
     applyCellularAutomaton(grid, count){
@@ -84,8 +103,8 @@ class World{
             };
 
             grid = newGrid;
-            this.tiles = grid;
         };
+        return grid;
     };
 
     isWithinMapBounds(y, x, width, height){
