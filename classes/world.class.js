@@ -1,6 +1,7 @@
 class World{
     canvas;
     ctx;
+    input;
     playerCharacter = new PlayerCharacter(150, 160);
     worldElements = [];
     renderedElements = [];
@@ -8,10 +9,10 @@ class World{
     tileSize = 32;
     camera = new Camera;
 
-    constructor(canvas) {
+    constructor(canvas, input) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
-        this.worldElements = this.applyCellularAutomaton(this.generateNoiseMap(this.noiseDensity, 256, 256), 4);
+        this.worldElements = this.applyCellularAutomaton(this.generateNoiseMap(this.noiseDensity, 128, 128), 4);
         this.renderedElements = this.createArray2D(Math.floor(this.canvas.width/this.tileSize), Math.floor(this.canvas.height/this.tileSize));
     };
 
@@ -30,7 +31,12 @@ class World{
                 };
             });
         });
-        this.ctx.drawImage(this.playerCharacter.image, this.playerCharacter.position.x - this.camera.position.x, this.playerCharacter.position.y - this.camera.position.y, 200, 300);
+        
+        try{
+            this.ctx.drawImage(this.playerCharacter.image, this.playerCharacter.position.x - this.camera.position.x, this.playerCharacter.position.y - this.camera.position.y, 64, 64);
+        }catch{
+
+        }
         self = this;
         requestAnimationFrame(function(){
             self.draw();
@@ -43,7 +49,11 @@ class World{
 
         for(let i = 0; i < this.renderedElements.length; i++){
             for(let j = 0; j < this.renderedElements[i].length; j++){
-                this.renderedElements[i][j] = this.worldElements[positionX + i][positionY + j];
+                try{
+                    this.renderedElements[i][j] = this.worldElements[positionX + i][positionY + j];
+                } catch{
+
+                };
             };
         };
     };
