@@ -1,9 +1,11 @@
 class Actor {
+    world;
     position = {x:null, y:null};
     rotation = 0;
     scale = 1;
     image;
     imageCache = {};
+    speed;
 
     constructor(x, y) {
         this.position = {x, y};

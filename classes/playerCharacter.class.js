@@ -21,16 +21,39 @@ class PlayerCharacter extends Pawn{
 
     constructor(x, y) {
         super(x, y);
+        this.loadImage("assets/img/characters/hero/idle/idle/Female-Hero1.png");
         this.loadImages(this.idleImages);
         this.animate();
+        this.speed = 10;
+    };
+
+    getInput(){
+        if(this.speed != undefined){
+            if(this.world.input.up){
+                this.moveUp();
+            };
+
+            if(this.world.input.down){
+                this.moveDown();
+            };
+
+            if(this.world.input.right){
+                this.moveRight();
+            };
+
+            if(this.world.input.left){
+                this.moveLeft();
+            };
+        };
     };
 
     animate(){
+
         setInterval( () =>{
             let i = this.currentImage % this.idleImages.length;
             let path = this.idleImages[i];
             this.image = this.imageCache[path];
             this.currentImage++;
-        }), 1000;
+        }, 1000/12);
     };
 };

@@ -10,30 +10,30 @@ function init(){
 
 window.addEventListener("keydown", (event) =>{
     if(event.keyCode == 87){
-        Input.up = true;
+        input.up = true;
     };
     if(event.keyCode == 83){
-        Input.down = true;
+        input.down = true;
     };
     if(event.keyCode == 65){
-        Input.left = true;
+        input.left = true;
     };  
     if(event.keyCode == 68){
-        Input.right = true;
+        input.right = true;
     };
 });
 
 window.addEventListener("keyup", (event) =>{
     if(event.keyCode == 87){
-        Input.up = false;
+        input.up = false;
     };
     if(event.keyCode == 83){
-        Input.down = false;
+        input.down = false;
     };
     if(event.keyCode == 65){
-        Input.left = false;
+        input.left = false;
     };  
     if(event.keyCode == 68){
-        Input.right = false;
+        input.right = false;
     };
 });

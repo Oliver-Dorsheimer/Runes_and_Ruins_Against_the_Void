@@ -5,15 +5,19 @@ class Pawn extends Actor{
     };
 
     moveUp(){
+        this.position.y -= this.speed;
+    };
 
-    }
-    moveRight(){
-        
-    }
     moveDown(){
-        
-    }
+        this.position.y += this.speed;
+    };
+
+    moveRight(){
+        this.position.x += this.speed;
+    };
+
     moveLeft(){
-        
-    }
+        this.position.x -= this.speed;
+    };
+    
 };

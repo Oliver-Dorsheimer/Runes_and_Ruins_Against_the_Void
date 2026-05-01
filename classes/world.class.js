@@ -5,15 +5,17 @@ class World{
     playerCharacter = new PlayerCharacter(150, 160);
     worldElements = [];
     renderedElements = [];
-    noiseDensity = 34;
-    tileSize = 32;
+    noiseDensity = 20;
+    tileSize = 4;
     camera = new Camera;
 
     constructor(canvas, input) {
+        this.input = input;
+        this.playerCharacter.world = this;
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
-        this.worldElements = this.applyCellularAutomaton(this.generateNoiseMap(this.noiseDensity, 128, 128), 4);
-        this.renderedElements = this.createArray2D(Math.floor(this.canvas.width/this.tileSize), Math.floor(this.canvas.height/this.tileSize));
+        this.worldElements = this.applyCellularAutomaton(this.generateNoiseMap(this.noiseDensity, 128, 128), 0);
+        this.renderedElements = this.createArray2D(Math.floor(this.canvas.width/this.tileSize+1), Math.floor(this.canvas.height/this.tileSize+2));
     };
 
     moveCameraToPosition(x,y){
@@ -27,16 +29,20 @@ class World{
         this.renderedElements.forEach((height, index) => {
             this.renderedElements[index].forEach(tile => {
                 if(tile){
-                    this.ctx.drawImage(tile.image, tile.position.x - this.camera.position.x, tile.position.y - this.camera.position.y, 64, 64);
+                    this.ctx.drawImage(tile.image, tile.position.x - this.camera.position.x, tile.position.y - this.camera.position.y, this.tileSize, this.tileSize);
                 };
             });
         });
-        
+
+        this.playerCharacter.getInput();
+        this.ctx.drawImage(this.playerCharacter.image, this.playerCharacter.position.x - this.camera.position.x, this.playerCharacter.position.y - this.camera.position.y, 32, 32);
         try{
-            this.ctx.drawImage(this.playerCharacter.image, this.playerCharacter.position.x - this.camera.position.x, this.playerCharacter.position.y - this.camera.position.y, 64, 64);
+            
         }catch{
 
         }
+        this.camera.position.x = this.playerCharacter.position.x - this.canvas.width/2;
+        this.camera.position.y = this.playerCharacter.position.y - this.canvas.height/2;
         self = this;
         requestAnimationFrame(function(){
             self.draw();
@@ -49,10 +55,10 @@ class World{
 
         for(let i = 0; i < this.renderedElements.length; i++){
             for(let j = 0; j < this.renderedElements[i].length; j++){
-                try{
+                if(this.isWithinMapBounds(positionX + i, positionY + j, this.worldElements.length, this.worldElements[0].length)){
                     this.renderedElements[i][j] = this.worldElements[positionX + i][positionY + j];
-                } catch{
-
+                }else{
+                    this.renderedElements[i][j] = null;
                 };
             };
         };
