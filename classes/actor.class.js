@@ -1,7 +1,11 @@
 class Actor {
     world;
-    position = {x:null, y:null};
+    height;
+    width;
+    position;
+    midPoint = {x:null, y:null};
     rotation = 0;
+    radius;
     scale = 1;
     image;
     imageCache = {};

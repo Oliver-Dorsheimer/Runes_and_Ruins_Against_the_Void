@@ -2,30 +2,38 @@ class World{
     canvas;
     ctx;
     input;
-    playerCharacter = new PlayerCharacter(150, 160);
+    playerCharacter = new PlayerCharacter(0, 0);
+    spawnUnset = true;
     worldElements = [];
     renderedElements = [];
     noiseDensity = 20;
-    tileSize = 64;
+    tileSize = 32;
     camera = new Camera;
+    currentMousePositionInCanvas = {x:0, y:0};
     currentMousePosition = {x:0, y:0};
-
+    
     constructor(canvas, input) {
+        this.canvas = canvas;
         this.input = input;
         this.playerCharacter.world = this;
         this.ctx = canvas.getContext('2d');
-        this.canvas = canvas;
         this.worldElements = this.applyCellularAutomaton(this.generateNoiseMap(this.noiseDensity, 128, 128), 0);
         this.renderedElements = this.createArray2D(Math.floor(this.canvas.width/this.tileSize+1), Math.floor(this.canvas.height/this.tileSize+2));
     };
 
-    moveCameraToPosition(x,y){
-        this.camera.position.x += x;
-        this.camera.position.y += y;
+    setCharacterSpawn(){
+        if(this.spawnUnset){
+            this.playerCharacter.position.x = this.canvas.width/2;
+            this.playerCharacter.position.y = this.canvas.height/2;
+            this.spawnUnset= false;
+        };
     };
 
     draw(){
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
+        this.setCharacterSpawn();
+        this.reCalculateGameData();
+        this.getMousePositionInsideGameWorld(this.currentMousePositionInCanvas);
         this.viewportElementsSelector(this.camera.position);
         this.renderedElements.forEach((height, index) => {
             this.renderedElements[index].forEach(tile => {
@@ -36,7 +44,7 @@ class World{
         });
 
         this.playerCharacter.getInput();
-        this.ctx.drawImage(this.playerCharacter.image, this.getPositionInCanvas(this.playerCharacter.position).x, this.getPositionInCanvas(this.playerCharacter.position).y, 128, 128);
+        this.ctx.drawImage(this.playerCharacter.image, this.getPositionInCanvas(this.playerCharacter.position).x, this.getPositionInCanvas(this.playerCharacter.position).y, this.playerCharacter.height, this.playerCharacter.width);
         try{
             
         }catch{
@@ -48,10 +56,6 @@ class World{
         requestAnimationFrame(function(){
             self.draw();
         });
-    };
-
-    getPositionInCanvas(elementWorldPosition){
-        return {x: elementWorldPosition.x - this.camera.position.x, y: elementWorldPosition.y - this.camera.position.y};
     };
 
     viewportElementsSelector(position){
@@ -67,6 +71,10 @@ class World{
                 };
             };
         };
+    };
+
+    reCalculateGameData(){
+        
     };
 
     createArray2D(width, height){
@@ -135,12 +143,22 @@ class World{
         return true;
     };
 
-    getMousePositionInsideCanvas(){
+    getPositionInCanvas(elementWorldPosition){
+        return {x: elementWorldPosition.x - this.camera.position.x, y: elementWorldPosition.y - this.camera.position.y};
+    };
+
+    getMousePositionInsideCanvas(event){
         const rect = this.canvas.getBoundingClientRect();
         const x = Math.floor(event.clientX - rect.left);
         const y = Math.floor(event.clientY - rect.top);
+        this.currentMousePositionInCanvas = {x, y};
+        this.currentMousePosition = this.getMousePositionInsideGameWorld(this.currentMousePositionInCanvas);
+        return this.currentMousePositionInCanvas;
+    };
 
-        this.currentMousePosition.x = x;
-        this.currentMousePosition.y = y;
+    getMousePositionInsideGameWorld(PositionInCanvas){
+        const x = PositionInCanvas.x + this.camera.position.x;
+        const y = PositionInCanvas.y + this.camera.position.y;
+        return{x, y};
     };
 };

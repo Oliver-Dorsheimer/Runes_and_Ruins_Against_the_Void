@@ -22,6 +22,8 @@ class PlayerCharacter extends Pawn{
         this.loadImages(this.idleImages);
         this.animate();
         this.speed = 3;
+        this.height = 64;
+        this.width = 64;
     };
 
     getInput(){
@@ -51,7 +53,6 @@ class PlayerCharacter extends Pawn{
                 let path = this.idleImages[i];
                 this.image = this.imageCache[path];
                 this.currentImage++;
-                console.log(this.getDistanceOfVector2D(this.position, this.world.getPositionInCanvas(this.world.currentMousePosition)));
             };
         }, 1000/8);
     };
@@ -60,16 +61,4 @@ class PlayerCharacter extends Pawn{
 
     };
 
-    getVector2D(){
-        const x = this.getDistanceOfVector2D(this.position.x, this.world.getPositionInCanvas(this.world.currentMousePosition));
-        const y = this.getDistanceOfVector2D(this.position.y, this.world.getPositionInCanvas(this.world.currentMousePosition));
-
-        return {x, y}
-    };
-
-    getDistanceOfVector2D(VectorA, VectorB){
-        let x = Math.abs(VectorA.x - VectorB.x);
-        let y = Math.abs(VectorA.y - VectorB.y);
-        return {x, y};
-    };
 };

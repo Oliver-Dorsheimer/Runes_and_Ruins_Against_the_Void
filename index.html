@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <script src="classes/vector2D.class.js"></script>
     <script src="classes/actor.class.js"></script>
     <script src="classes/input.class.js"></script>
     <script src="classes/pawn.class.js"></script>
@@ -30,7 +31,7 @@
     </header>
     <main>
         <div class = "main_content_wrapper content_limitation">
-            <canvas id = "game_window" width="1280" height="720" onmousemove="world.getMousePositionInsideCanvas()">
+            <canvas id = "game_window" width="1280" height="720" onmouseover = "world.getMousePositionInsideCanvas(event)">
 
             </canvas>
         </div>
