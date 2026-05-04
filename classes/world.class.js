@@ -6,8 +6,9 @@ class World{
     worldElements = [];
     renderedElements = [];
     noiseDensity = 20;
-    tileSize = 4;
+    tileSize = 64;
     camera = new Camera;
+    currentMousePosition = {x:0, y:0};
 
     constructor(canvas, input) {
         this.input = input;
@@ -35,7 +36,7 @@ class World{
         });
 
         this.playerCharacter.getInput();
-        this.ctx.drawImage(this.playerCharacter.image, this.playerCharacter.position.x - this.camera.position.x, this.playerCharacter.position.y - this.camera.position.y, 32, 32);
+        this.ctx.drawImage(this.playerCharacter.image, this.getPositionInCanvas(this.playerCharacter.position).x, this.getPositionInCanvas(this.playerCharacter.position).y, 128, 128);
         try{
             
         }catch{
@@ -47,6 +48,10 @@ class World{
         requestAnimationFrame(function(){
             self.draw();
         });
+    };
+
+    getPositionInCanvas(elementWorldPosition){
+        return {x: elementWorldPosition.x - this.camera.position.x, y: elementWorldPosition.y - this.camera.position.y};
     };
 
     viewportElementsSelector(position){
@@ -128,5 +133,14 @@ class World{
             return false;
         };
         return true;
+    };
+
+    getMousePositionInsideCanvas(){
+        const rect = this.canvas.getBoundingClientRect();
+        const x = Math.floor(event.clientX - rect.left);
+        const y = Math.floor(event.clientY - rect.top);
+
+        this.currentMousePosition.x = x;
+        this.currentMousePosition.y = y;
     };
 };
