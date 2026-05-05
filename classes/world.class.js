@@ -9,8 +9,8 @@ class World{
     noiseDensity = 20;
     tileSize = 32;
     camera = new Camera;
-    currentMousePositionInCanvas = {x:0, y:0};
-    currentMousePosition = {x:0, y:0};
+    currentMousePositionInCanvas = new Vector2D(0, 0);
+    currentMousePosition = new Vector2D(0, 0);
     
     constructor(canvas, input) {
         this.canvas = canvas;
@@ -32,6 +32,7 @@ class World{
     draw(){
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
         this.setCharacterSpawn();
+        this.recalcMousePositionInsideGameWorld();
         this.reCalculateGameData();
         this.getMousePositionInsideGameWorld(this.currentMousePositionInCanvas);
         this.viewportElementsSelector(this.camera.position);
@@ -143,6 +144,7 @@ class World{
         return true;
     };
 
+    //#region Mouse Tracking
     getPositionInCanvas(elementWorldPosition){
         return {x: elementWorldPosition.x - this.camera.position.x, y: elementWorldPosition.y - this.camera.position.y};
     };
@@ -152,7 +154,6 @@ class World{
         const x = Math.floor(event.clientX - rect.left);
         const y = Math.floor(event.clientY - rect.top);
         this.currentMousePositionInCanvas = {x, y};
-        this.currentMousePosition = this.getMousePositionInsideGameWorld(this.currentMousePositionInCanvas);
         return this.currentMousePositionInCanvas;
     };
 
@@ -161,4 +162,12 @@ class World{
         const y = PositionInCanvas.y + this.camera.position.y;
         return{x, y};
     };
+
+    recalcMousePositionInsideGameWorld(){
+        setInterval( () =>{
+            this.currentMousePosition = this.getMousePositionInsideGameWorld(this.currentMousePositionInCanvas);
+            console.log(this.currentMousePosition);
+        }, 100);
+    };
+    //#endregion
 };

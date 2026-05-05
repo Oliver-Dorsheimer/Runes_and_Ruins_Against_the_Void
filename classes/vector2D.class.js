@@ -1,8 +1,11 @@
 class Vector2D{
+    x;
+    y;
     origin = {x:0,y:0};
     point = {x:0,y:0};
-    constructor(origin, point){
-
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
     };
 
     getLengthOfVector2D(Vector){

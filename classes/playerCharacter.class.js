@@ -1,29 +1,33 @@
 class PlayerCharacter extends Pawn{
     idleImages = [
-            "assets/img/characters/hero/idle/idle/front/Female-Hero1.png",
-            "assets/img/characters/hero/idle/idle/front/Female-Hero2.png",
-            "assets/img/characters/hero/idle/idle/front/Female-Hero3.png",
-            "assets/img/characters/hero/idle/idle/front/Female-Hero4.png",
-            "assets/img/characters/hero/idle/idle/front/Female-Hero5.png",
-            "assets/img/characters/hero/idle/idle/front/Female-Hero6.png",
-            "assets/img/characters/hero/idle/idle/front/Female-Hero7.png",
-            "assets/img/characters/hero/idle/idle/front/Female-Hero8.png",
-            "assets/img/characters/hero/idle/idle/front/Female-Hero9.png",
-            "assets/img/characters/hero/idle/idle/front/Female-Hero10.png",
-            "assets/img/characters/hero/idle/idle/front/Female-Hero11.png",
-            "assets/img/characters/hero/idle/idle/front/Female-Hero12.png"];
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front1.png",
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front2.png",
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front3.png",
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front4.png",
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front5.png",
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front6.png",
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front7.png",
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front8.png",
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front9.png",
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front10.png",
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front11.png",
+            "assets/img/characters/hero/idle/idle/front/Sword_Idle_front12.png"];
     longIdleImages = [];
     walkImages = [];
     currentImage = 0;
 
     constructor(x, y) {
         super(x, y);
-        this.loadImage("assets/img/characters/hero/idle/idle/front/Female-Hero1.png");
+        this.loadImage("assets/img/characters/hero/idle/idle/front/Sword_Idle_front1.png");
         this.loadImages(this.idleImages);
         this.animate();
         this.speed = 3;
-        this.height = 64;
-        this.width = 64;
+        this.height = 32;
+        this.width = 32;
+    };
+
+    dash(){
+
     };
 
     getInput(){
@@ -58,6 +62,10 @@ class PlayerCharacter extends Pawn{
     };
 
     setCurrentIdleAnimation(){
+
+    };
+
+    refreshLookingDirection(mousePositioninGameWorld){
 
     };
 

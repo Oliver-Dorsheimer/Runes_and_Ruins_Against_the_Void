@@ -36,4 +36,15 @@ window.addEventListener("keyup", (event) =>{
     if(event.keyCode == 68){
         input.right = false;
     };
+    if(event.keyCode == 32){
+        input.spacebar = false;
+    };
+});
+
+window.addEventListener("mousedown", (event) =>{
+    input.leftMouseButton = true;
+});
+
+window.addEventListener("mouseup", (event) =>{
+    input.leftMouseButton = false;
 });

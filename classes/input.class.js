@@ -3,6 +3,9 @@ class Input{
     down = false;
     left = false;
     right = false;
+    spacebar = false;
+
+    leftMouseButton = false;
     constructor(){
 
     };

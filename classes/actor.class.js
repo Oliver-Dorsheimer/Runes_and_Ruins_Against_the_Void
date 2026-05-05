@@ -1,16 +1,16 @@
 class Actor {
     world;
+    image;
+    imageCache = {};
     height;
     width;
     position;
-    midPoint = {x:null, y:null};
     rotation = 0;
     radius;
     scale = 1;
-    image;
-    imageCache = {};
     speed;
-
+    lookingDirection;
+    
     constructor(x, y) {
         this.position = {x, y};
         this.rotation = 0;
