@@ -5,7 +5,7 @@ let input = new Input;
 function init(){
     canvas = document.getElementById("game_window");
     world = new World(canvas, input);
-    world.draw();
+    world.gameLoop();
 };
 
 window.addEventListener("keydown", (event) =>{
@@ -20,6 +20,9 @@ window.addEventListener("keydown", (event) =>{
     };  
     if(event.keyCode == 68){
         input.right = true;
+    };
+    if(event.keyCode == 32){
+        input.spacebar = true;
     };
 });
 
@@ -47,4 +50,8 @@ window.addEventListener("mousedown", (event) =>{
 
 window.addEventListener("mouseup", (event) =>{
     input.leftMouseButton = false;
+});
+
+window.addEventListener("mousemove", (event) =>{
+    world.getMousePositionInsideCanvas(event);
 });

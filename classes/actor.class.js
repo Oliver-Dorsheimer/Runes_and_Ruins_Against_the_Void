@@ -4,15 +4,17 @@ class Actor {
     imageCache = {};
     height;
     width;
-    position;
-    rotation = 0;
     radius;
     scale = 1;
+
+    position = new Vector2D(0, 0);
+    lookingDirection = new Vector2D(0, 0);
+    rotation = 0;
+    physicsVelocity = new Vector2D(0, 0);
     speed;
-    lookingDirection;
-    
+
     constructor(x, y) {
-        this.position = {x, y};
+        this.position = new Vector2D(x, y);
         this.rotation = 0;
         this.scale = 1;
     };
