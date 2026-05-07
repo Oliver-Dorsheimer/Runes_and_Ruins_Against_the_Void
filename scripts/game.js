@@ -8,6 +8,14 @@ function init(){
     world.gameLoop();
 };
 
+function createArray2D(width, height){
+    let tempArray = new Array(width).fill(null);
+    for(let i = 0; i < tempArray.length;i++){
+       tempArray[i] = new Array(height).fill(null);
+    };
+    return tempArray;
+};
+
 window.addEventListener("keydown", (event) =>{
     if(event.keyCode == 87){
         input.up = true;

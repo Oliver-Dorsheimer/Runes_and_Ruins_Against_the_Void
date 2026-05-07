@@ -1,5 +1,4 @@
 class Pawn extends Actor{
-    controller;
     desiredDirectionVelocity = new Vector2D(0, 0);
     isSprinting = false;
     sprintingSpeed = 2;

@@ -2,14 +2,9 @@ class World{
     canvas;
     ctx;
     input;
-    playerController;
+    currentLevel = new WorldSection();
     playerCharacter = new PlayerCharacter(0, 0);
-    spawnUnset = true;
-    worldBitmap = [];
-    worldElements = [];
-    renderedElements = [];
-    noiseDensity = 45;
-    tileSize = 64;
+    elementsInCameraView = [];
     camera = new Camera;
     currentMousePositionInCanvas = new Vector2D(0, 0);
     currentMousePosition = new Vector2D(0, 0);
@@ -19,30 +14,25 @@ class World{
         this.input = input;
         this.playerCharacter.world = this;
         this.ctx = canvas.getContext('2d');
-        this.worldBitmap = this.applyCellularAutomaton(this.generateNoiseMap(this.noiseDensity, 128, 128), 5);
-        this.worldElements = this.setTiles(this.worldBitmap);
-        this.renderedElements = this.createArray2D(Math.floor(this.canvas.width/this.tileSize+1), Math.floor(this.canvas.height/this.tileSize+2));
+        this.elementsInCameraView = createArray2D(Math.floor(this.canvas.width/this.currentLevel.tileSize+1), Math.floor(this.canvas.height/this.currentLevel.tileSize+2));
         this.updatingLoop();
+        this.setCharacterSpawn();
     };
 
     setCharacterSpawn(){
-        if(this.spawnUnset){
-            this.playerCharacter.position.x = this.canvas.width/2;
-            this.playerCharacter.position.y = this.canvas.height/2;
-            this.spawnUnset= false;
-        };
+        this.playerCharacter.position.x = this.canvas.width/2;
+        this.playerCharacter.position.y = this.canvas.height/2;
     };
 
     gameLoop(){
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
-        this.setCharacterSpawn();
         this.reCalculateGameData();
         this.playerCharacter.updatePosition();
         this.viewportElementsSelector(this.camera.position);
-        this.renderedElements.forEach((height, index) => {
-            this.renderedElements[index].forEach(tile => {
+        this.elementsInCameraView.forEach((height, index) => {
+            this.elementsInCameraView[index].forEach(tile => {
                 if(tile){
-                    this.ctx.drawImage(tile.image, Math.round(tile.position.x - this.camera.position.x), Math.round(tile.position.y - this.camera.position.y), this.tileSize, this.tileSize);
+                    this.ctx.drawImage(tile.image, Math.round(tile.position.x - this.camera.position.x), Math.round(tile.position.y - this.camera.position.y), this.currentLevel.tileSize, this.currentLevel.tileSize);
                 };
             });
         });
@@ -63,15 +53,15 @@ class World{
     };
 
     viewportElementsSelector(position){
-        let positionX = Math.floor(position.x / this.tileSize);
-        let positionY = Math.floor(position.y / this.tileSize);
+        let positionX = Math.floor(position.x / this.currentLevel.tileSize);
+        let positionY = Math.floor(position.y / this.currentLevel.tileSize);
 
-        for(let i = 0; i < this.renderedElements.length; i++){
-            for(let j = 0; j < this.renderedElements[i].length; j++){
-                if(this.isWithinMapBounds(positionX + i, positionY + j, this.worldElements.length, this.worldElements[0].length)){
-                    this.renderedElements[i][j] = this.worldElements[positionX + i][positionY + j];
+        for(let i = 0; i < this.elementsInCameraView.length; i++){
+            for(let j = 0; j < this.elementsInCameraView[i].length; j++){
+                if(this.currentLevel.isWithinMapBounds(positionX + i, positionY + j, this.currentLevel.worldElements.length, this.currentLevel.worldElements[0].length)){
+                    this.elementsInCameraView[i][j] = this.currentLevel.worldElements[positionX + i][positionY + j];
                 }else{
-                    this.renderedElements[i][j] = null;
+                    this.elementsInCameraView[i][j] = null;
                 };
             };
         };
@@ -87,86 +77,6 @@ class World{
         this.recalcMousePositionInsideGameWorld();
         this.getMousePositionInsideGameWorld(this.currentMousePositionInCanvas);
         
-    };
-
-    createArray2D(width, height){
-        let tempArray = new Array(width).fill(null);
-        for(let i = 0; i < tempArray.length;i++){
-            tempArray[i] = new Array(height).fill(null);
-        };
-        return tempArray;
-    };
-
-    generateNoiseMap(density, width, height){
-        let noiseMap = this.createArray2D(width, height);
-        for(let i = 0; i < width; i++){
-            for(let j = 0; j < height; j++){
-                let random = getRandomNumber() * 100;
-                if(random > density){
-                    noiseMap[i][j] = false;
-                }else{
-                    noiseMap[i][j] = true;
-                };
-            };
-        };
-        return noiseMap;
-    };
-
-    applyCellularAutomaton(grid, count){
-        for (let i = 0; i < count; i++){
-            let tempGrid = grid.map(row => row.slice());
-            let newGrid = this.createArray2D(tempGrid.length, tempGrid[0].length);
-
-            for(let x = 0; x < tempGrid.length; x++){
-                for(let y = 0; y < tempGrid[x].length; y++){
-                    let neighboringWallCount = 0;
-
-                    for (let j = x - 1; j <= x + 1; j++){
-                        for (let k = y - 1; k <= y + 1; k++){
-                            if(this.isWithinMapBounds(j, k, tempGrid.length, tempGrid[0].length)){
-                                if(j !== x || k !== y){
-                                    if(tempGrid[j][k] == false){
-                                        neighboringWallCount++;
-                                    };
-                                };
-                            }else{
-                                neighboringWallCount++;
-                            };
-                        };
-                    };
-
-                    if(neighboringWallCount > 4){
-                        newGrid[x][y] = true;
-                    } else {
-                        newGrid[x][y] = false;
-                    };
-                };
-            };
-
-            grid = newGrid;
-        };
-        return grid;
-    };
-
-    setTiles(bitMap){
-        let elementsArray = this.createArray2D(bitMap.length, bitMap[0].length);
-        for(let x = 0; x < bitMap[0].length; x++){
-            for(let y = 0; y < bitMap[x].length; y++){
-                if(bitMap[x][y] == true){
-                    elementsArray[x][y] = new GrassTile(x * this.tileSize, y * this.tileSize);
-                }else{
-                    elementsArray[x][y] = new DirtTile(x * this.tileSize, y * this.tileSize);
-                };
-            };
-        };
-        return elementsArray;
-    };
-
-    isWithinMapBounds(y, x, width, height){
-        if(y < 0 || y >= width || x < 0 || x >= height){
-            return false;
-        };
-        return true;
     };
 
     getPositionInCanvas(elementWorldPosition){
