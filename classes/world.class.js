@@ -6,7 +6,6 @@ class World{
     playerCharacter = new PlayerCharacter(0, 0);
     elementsInCameraView = [];
     camera = new Camera;
-    currentMousePositionInCanvas = new Vector2D(0, 0);
     currentMousePosition = new Vector2D(0, 0);
     
     constructor(canvas, input) {
@@ -17,6 +16,7 @@ class World{
         this.elementsInCameraView = createArray2D(Math.floor(this.canvas.width/this.currentLevel.tileSize+1), Math.floor(this.canvas.height/this.currentLevel.tileSize+2));
         this.updatingLoop();
         this.setCharacterSpawn();
+        this.startRecalculationOfMousePositionInGameWorldLoop();
     };
 
     setCharacterSpawn(){
@@ -26,7 +26,6 @@ class World{
 
     gameLoop(){
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
-        this.reCalculateGameData();
         this.playerCharacter.updatePosition();
         this.viewportElementsSelector(this.camera.position);
         this.elementsInCameraView.forEach((height, index) => {
@@ -73,23 +72,16 @@ class World{
         }, 100);
     };
 
-    reCalculateGameData(){
-        this.recalcMousePositionInsideGameWorld();
-        this.getMousePositionInsideGameWorld(this.currentMousePositionInCanvas);
-        
-    };
-
     getPositionInCanvas(elementWorldPosition){
         return new Vector2D(elementWorldPosition.x - this.camera.position.x, elementWorldPosition.y - this.camera.position.y);
     };
 
     //#region Mouse Tracking
-    getMousePositionInsideCanvas(event){
-        const rect = this.canvas.getBoundingClientRect();
-        const x = Math.floor(event.clientX - rect.left);
-        const y = Math.floor(event.clientY - rect.top);
-        this.currentMousePositionInCanvas = new Vector2D(x, y);
-        return new Vector2D(x, y);
+
+    startRecalculationOfMousePositionInGameWorldLoop(){
+        setInterval( () =>{
+            input.mousePositionInGameWorld = this.getMousePositionInsideGameWorld(input.mousePositionInCanvas);
+        }, 100);
     };
 
     getMousePositionInsideGameWorld(PositionInCanvas){
@@ -98,10 +90,5 @@ class World{
         return new Vector2D(x, y);
     };
 
-    recalcMousePositionInsideGameWorld(){
-        setInterval( () =>{
-            this.currentMousePosition = this.getMousePositionInsideGameWorld(this.currentMousePositionInCanvas);
-        }, 100);
-    };
     //#endregion
 };

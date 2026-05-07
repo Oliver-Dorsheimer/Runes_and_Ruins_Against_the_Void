@@ -1,9 +1,10 @@
 let canvas;
 let world;
-let input = new Input;
+let input;
 
 function init(){
     canvas = document.getElementById("game_window");
+    input = new Input(canvas)
     world = new World(canvas, input);
     world.gameLoop();
 };
@@ -18,54 +19,68 @@ function createArray2D(width, height){
 
 window.addEventListener("keydown", (event) =>{
     if(event.keyCode == 87){
-        input.up = true;
+        input.upPressed = true;
+        input.upReleased = false;
     };
     if(event.keyCode == 83){
-        input.down = true;
+        input.downPressed = true;
+        input.downReleased = false;
     };
     if(event.keyCode == 65){
-        input.left = true;
+        input.leftPressed = true;
+        input.leftReleased = false;
     };  
     if(event.keyCode == 68){
-        input.right = true;
+        input.rightPressed = true;
+        input.rightReleased = false;
     };
     if(event.keyCode == 32){
-        input.spacebar = true;
+        input.spacebarPressed = true;
+        input.spacebarReleased = false;
     };
     if(event.keyCode == 16){
-        input.shift = true;
+        input.shiftPressed = true;
+        input.shiftReleased = false;
     };
 });
 
 window.addEventListener("keyup", (event) =>{
     if(event.keyCode == 87){
-        input.up = false;
+        input.upPressed = false;
+        input.upReleased = true;
     };
     if(event.keyCode == 83){
-        input.down = false;
+        input.downPressed = false;
+        input.downReleased = true;
     };
     if(event.keyCode == 65){
-        input.left = false;
+        input.leftPressed = false;
+        input.leftReleased = true;
     };  
     if(event.keyCode == 68){
-        input.right = false;
+        input.rightPressed = false;
+        input.rightReleased = true;
     };
     if(event.keyCode == 32){
-        input.spacebar = false;
+        input.spacebarPressed = false;
+        input.spacebarReleased = true;
     };
     if(event.keyCode == 16){
-        input.shift = false;
+        input.shiftPressed = false;
+        input.shiftReleased = true;
     };
 });
 
 window.addEventListener("mousedown", (event) =>{
-    input.leftMouseButton = true;
+    input.leftMouseButtonPressed = true;
+    input.leftMouseButtonReleased = false;
 });
 
 window.addEventListener("mouseup", (event) =>{
-    input.leftMouseButton = false;
+    input.leftMouseButtonPressed = false;
+    input.leftMouseButtonReleased = true;
 });
 
 window.addEventListener("mousemove", (event) =>{
-    world.getMousePositionInsideCanvas(event);
+    input.getMousePositionInsideCanvas(event);
 });
