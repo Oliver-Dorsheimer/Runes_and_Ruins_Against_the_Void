@@ -1,5 +1,8 @@
 class Pawn extends Actor{
+    controller;
     desiredDirectionVelocity = new Vector2D(0, 0);
+    isSprinting = false;
+    sprintingSpeed = 2;
 
     constructor(x, y) {
         super(x, y);
@@ -22,9 +25,15 @@ class Pawn extends Actor{
     };
 
     updatePosition(){
-        let normalizedDesiredVector = this.desiredDirectionVelocity.getNormalizedVector2D(this.desiredDirectionVelocity);
-        let totalVelocity = this.physicsVelocity.add(normalizedDesiredVector);
-        this.position = this.position.add(totalVelocity.multiply(this.speed));
+        let normalizedDesiredDirectionVelocity = this.desiredDirectionVelocity.getNormalizedVector2D(this.desiredDirectionVelocity);
+        let totalVelocity = this.physicsVelocity.add(normalizedDesiredDirectionVelocity);
+        let totalSpeed;
+        if(this.isSprinting){
+            totalSpeed = this.walkingSpeed + this.sprintingSpeed;
+        }else{
+            totalSpeed = this.walkingSpeed;
+        };
+        this.position = this.position.add(totalVelocity.multiply(totalSpeed));
     };
     
 };

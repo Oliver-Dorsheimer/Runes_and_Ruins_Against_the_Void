@@ -2,11 +2,13 @@ class World{
     canvas;
     ctx;
     input;
+    playerController;
     playerCharacter = new PlayerCharacter(0, 0);
     spawnUnset = true;
+    worldBitmap = [];
     worldElements = [];
     renderedElements = [];
-    noiseDensity = 40;
+    noiseDensity = 45;
     tileSize = 64;
     camera = new Camera;
     currentMousePositionInCanvas = new Vector2D(0, 0);
@@ -17,9 +19,10 @@ class World{
         this.input = input;
         this.playerCharacter.world = this;
         this.ctx = canvas.getContext('2d');
-        this.worldElements = this.applyCellularAutomaton(this.generateNoiseMap(this.noiseDensity, 128, 128), 5);
+        this.worldBitmap = this.applyCellularAutomaton(this.generateNoiseMap(this.noiseDensity, 128, 128), 5);
+        this.worldElements = this.setTiles(this.worldBitmap);
         this.renderedElements = this.createArray2D(Math.floor(this.canvas.width/this.tileSize+1), Math.floor(this.canvas.height/this.tileSize+2));
-        this.updatingLoop()
+        this.updatingLoop();
     };
 
     setCharacterSpawn(){
@@ -100,9 +103,9 @@ class World{
             for(let j = 0; j < height; j++){
                 let random = getRandomNumber() * 100;
                 if(random > density){
-                    noiseMap[i][j] = new GrassTile(i * this.tileSize,j * this.tileSize);
+                    noiseMap[i][j] = false;
                 }else{
-                    noiseMap[i][j] = new DirtTile(i * this.tileSize,j * this.tileSize);
+                    noiseMap[i][j] = true;
                 };
             };
         };
@@ -114,15 +117,15 @@ class World{
             let tempGrid = grid.map(row => row.slice());
             let newGrid = this.createArray2D(tempGrid.length, tempGrid[0].length);
 
-            for(let j = 0; j < tempGrid.length; j++){
-                for(let k = 0; k < tempGrid[j].length; k++){
+            for(let x = 0; x < tempGrid.length; x++){
+                for(let y = 0; y < tempGrid[x].length; y++){
                     let neighboringWallCount = 0;
 
-                    for (let y = j - 1; y <= j + 1; y++){
-                        for (let x = k - 1; x <= k + 1; x++){
-                            if(this.isWithinMapBounds(y, x, tempGrid.length, tempGrid[0].length)){
-                                if(y !== j || x !== k){
-                                    if(tempGrid[y][x] instanceof GrassTile){
+                    for (let j = x - 1; j <= x + 1; j++){
+                        for (let k = y - 1; k <= y + 1; k++){
+                            if(this.isWithinMapBounds(j, k, tempGrid.length, tempGrid[0].length)){
+                                if(j !== x || k !== y){
+                                    if(tempGrid[j][k] == false){
                                         neighboringWallCount++;
                                     };
                                 };
@@ -133,9 +136,9 @@ class World{
                     };
 
                     if(neighboringWallCount > 4){
-                        newGrid[j][k] = new GrassTile(j * this.tileSize, k * this.tileSize);
+                        newGrid[x][y] = true;
                     } else {
-                        newGrid[j][k] = new DirtTile(j * this.tileSize, k * this.tileSize);
+                        newGrid[x][y] = false;
                     };
                 };
             };
@@ -143,6 +146,20 @@ class World{
             grid = newGrid;
         };
         return grid;
+    };
+
+    setTiles(bitMap){
+        let elementsArray = this.createArray2D(bitMap.length, bitMap[0].length);
+        for(let x = 0; x < bitMap[0].length; x++){
+            for(let y = 0; y < bitMap[x].length; y++){
+                if(bitMap[x][y] == true){
+                    elementsArray[x][y] = new GrassTile(x * this.tileSize, y * this.tileSize);
+                }else{
+                    elementsArray[x][y] = new DirtTile(x * this.tileSize, y * this.tileSize);
+                };
+            };
+        };
+        return elementsArray;
     };
 
     isWithinMapBounds(y, x, width, height){

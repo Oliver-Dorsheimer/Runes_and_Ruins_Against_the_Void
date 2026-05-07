@@ -11,7 +11,7 @@ class Actor {
     lookingDirection = new Vector2D(0, 0);
     rotation = 0;
     physicsVelocity = new Vector2D(0, 0);
-    speed;
+    walkingSpeed;
 
     constructor(x, y) {
         this.position = new Vector2D(x, y);

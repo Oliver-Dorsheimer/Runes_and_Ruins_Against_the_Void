@@ -24,6 +24,9 @@ window.addEventListener("keydown", (event) =>{
     if(event.keyCode == 32){
         input.spacebar = true;
     };
+    if(event.keyCode == 16){
+        input.shift = true;
+    };
 });
 
 window.addEventListener("keyup", (event) =>{
@@ -41,6 +44,9 @@ window.addEventListener("keyup", (event) =>{
     };
     if(event.keyCode == 32){
         input.spacebar = false;
+    };
+    if(event.keyCode == 16){
+        input.shift = false;
     };
 });
 

@@ -4,6 +4,7 @@ class Input{
     left = false;
     right = false;
     spacebar = false;
+    shift = false;
 
     leftMouseButton = false;
     constructor(){

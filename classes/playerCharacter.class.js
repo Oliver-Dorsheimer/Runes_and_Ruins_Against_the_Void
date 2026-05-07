@@ -76,7 +76,7 @@ class PlayerCharacter extends Pawn{
     currentImage = 0;
     animationChanged = false;
     canDash = true;
-    dashSpeed = 8;
+    dashSpeed = 10;
 
     constructor(x, y) {
         super(x, y);
@@ -84,23 +84,10 @@ class PlayerCharacter extends Pawn{
         this.loadImages(this.currentAnimation);
         this.setCurrentIdleAnimation();
         this.playCurrentAnimation();
-        this.speed = 3;
+        this.walkingSpeed = 2;
         this.height = 32;
         this.width = 32;
-    };
-
-    dash(){
-        if(this.canDash){
-            this.physicsVelocity = new Vector2D(this.lookingDirection.x * this.dashSpeed, this.lookingDirection.y * this.dashSpeed);
-            const dashDuration = setTimeout(() => {
-                this.physicsVelocity = new Vector2D(0, 0);
-                this.canDash = false;
-            }, 250);
-            const dashCooldown = setTimeout(() => {
-                this.canDash = true;
-            }, 3000);
-        };
-        
+        this.sprintingSpeed = 4;
     };
 
     getInput(){
@@ -122,21 +109,33 @@ class PlayerCharacter extends Pawn{
             this.moveLeft();
         };
 
+        if(this.world.input.shift){
+            this.isSprinting = true;
+        };
+
         if(this.world.input.spacebar){
             this.dash();
         };
+    };
+
+    dash(){
+        if(this.canDash){
+            this.physicsVelocity = new Vector2D(this.lookingDirection.x * this.dashSpeed, this.lookingDirection.y * this.dashSpeed);
+            const dashDuration = setTimeout(() => {
+                this.physicsVelocity = new Vector2D(0, 0);
+                this.canDash = false;
+            }, 200);
+            const dashCooldown = setTimeout(() => {
+                this.canDash = true;
+            }, 3000);
+        };
+        
     };
 
     setCurrentIdleAnimation(){
         setInterval( () =>{
             if(this.world != undefined){
                 this.refreshLookingDirection(this.world.currentMousePosition);
-
-                if(input.up + input.down + input.left + input.right > 0){
-
-                }else{
-                    
-                }
 
                 if(this.rotation >= 0.875 || this.rotation <= 0.125){
                     if(input.up + input.down + input.left + input.right > 0){
@@ -184,7 +183,7 @@ class PlayerCharacter extends Pawn{
                     };
                 }
             };
-        }, 100);
+        }, 1000/60);
     };
 
     playCurrentAnimation(){
@@ -207,7 +206,6 @@ class PlayerCharacter extends Pawn{
     refreshLookingDirection(positionToLookTo){
         this.lookingDirection = this.lookingDirection.getNormalizedDirectionFrom(this.position, positionToLookTo);
             this.rotation = (((Math.atan2(this.lookingDirection.x, this.lookingDirection.y)+ TAU)% TAU)/TAU);
-            console.log(this.rotation);
     };
 
 };
