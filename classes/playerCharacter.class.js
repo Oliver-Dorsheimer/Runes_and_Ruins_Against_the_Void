@@ -72,14 +72,17 @@ class PlayerCharacter extends Pawn{
             "assets/img/characters/hero/walk/back/Sword_Walk_back4.png",
             "assets/img/characters/hero/walk/back/Sword_Walk_back5.png",
             "assets/img/characters/hero/walk/back/Sword_Walk_back6.png"];
+    input;
     currentAnimation = this.frontIdleImages;
     currentImage = 0;
     animationChanged = false;
     canDash = true;
     dashSpeed = 10;
+    dashRef = this.dash.bind(this);
 
-    constructor(x, y) {
+    constructor(x, y, input) {
         super(x, y);
+        this.input = input;
         this.loadImage("assets/img/characters/hero/idle/idle/front/Sword_Idle_front1.png");
         this.loadImages(this.currentAnimation);
         this.setCurrentIdleAnimation();
@@ -88,6 +91,11 @@ class PlayerCharacter extends Pawn{
         this.height = 32;
         this.width = 32;
         this.sprintingSpeed = 4;
+        this.startListeners();
+    };
+
+    startListeners(){
+        this.input.on("dashPressed", this.dashRef);
     };
 
     getInput(){
@@ -135,7 +143,7 @@ class PlayerCharacter extends Pawn{
     setCurrentIdleAnimation(){
         setInterval( () =>{
             if(this.world != undefined){
-                this.refreshLookingDirection(this.world.currentMousePosition);
+                this.refreshLookingDirection(this.input.mousePositionInGameWorld);
 
                 if(this.rotation >= 0.875 || this.rotation <= 0.125){
                     if(input.up + input.down + input.left + input.right > 0){
@@ -186,6 +194,11 @@ class PlayerCharacter extends Pawn{
         }, 1000/60);
     };
 
+    refreshLookingDirection(positionToLookTo){
+        this.lookingDirection = this.lookingDirection.getNormalizedDirectionFrom(this.position, positionToLookTo);
+        this.rotation = (((Math.atan2(this.lookingDirection.x, this.lookingDirection.y)+ TAU)% TAU)/TAU);
+    };
+
     playCurrentAnimation(){
         setInterval( () =>{
             if(true){
@@ -202,10 +215,4 @@ class PlayerCharacter extends Pawn{
             };
         }, 1000/8);
     };
-
-    refreshLookingDirection(positionToLookTo){
-        this.lookingDirection = this.lookingDirection.getNormalizedDirectionFrom(this.position, positionToLookTo);
-            this.rotation = (((Math.atan2(this.lookingDirection.x, this.lookingDirection.y)+ TAU)% TAU)/TAU);
-    };
-
 };

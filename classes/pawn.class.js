@@ -7,20 +7,40 @@ class Pawn extends Actor{
         super(x, y);
     };
 
-    moveUp(){
+    walk(){
+
+    };
+
+    startMovingUp(){
         this.desiredDirectionVelocity.y -= 1;
     };
 
-    moveDown(){
+    startMovingDown(){
         this.desiredDirectionVelocity.y += 1;
     };
 
-    moveRight(){
+    startMovingRight(){
         this.desiredDirectionVelocity.x += 1;
     };
 
-    moveLeft(){
+    startMovingLeft(){
         this.desiredDirectionVelocity.x -= 1;
+    };
+
+    stopMovingUp(){
+        this.desiredDirectionVelocity.y += 1;
+    };
+
+    stopMovingDown(){
+        this.desiredDirectionVelocity.y -= 1;
+    };
+
+    stopMovingRight(){
+        this.desiredDirectionVelocity.x -= 1;
+    };
+
+    stopMovingLeft(){
+        this.desiredDirectionVelocity.x += 1;
     };
 
     updatePosition(){

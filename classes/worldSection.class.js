@@ -54,7 +54,6 @@ class WorldSection{
                     };
                 };
             };
-
             grid = newGrid;
         };
         return grid;

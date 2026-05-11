@@ -3,7 +3,7 @@ class World{
     ctx;
     input;
     currentLevel = new WorldSection();
-    playerCharacter = new PlayerCharacter(0, 0);
+    playerCharacter;
     elementsInCameraView = [];
     camera = new Camera;
     currentMousePosition = new Vector2D(0, 0);
@@ -11,6 +11,7 @@ class World{
     constructor(canvas, input) {
         this.canvas = canvas;
         this.input = input;
+        this.playerCharacter = new PlayerCharacter(0, 0, input);
         this.playerCharacter.world = this;
         this.ctx = canvas.getContext('2d');
         this.elementsInCameraView = createArray2D(Math.floor(this.canvas.width/this.currentLevel.tileSize+1), Math.floor(this.canvas.height/this.currentLevel.tileSize+2));
@@ -26,6 +27,7 @@ class World{
 
     gameLoop(){
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
+        this.playerCharacter.getInput();
         this.playerCharacter.updatePosition();
         this.viewportElementsSelector(this.camera.position);
         this.elementsInCameraView.forEach((height, index) => {
@@ -36,7 +38,6 @@ class World{
             });
         });
 
-        this.playerCharacter.getInput();
         this.ctx.drawImage(this.playerCharacter.image, Math.round(this.getPositionInCanvas(this.playerCharacter.position).x), Math.round(this.getPositionInCanvas(this.playerCharacter.position).y), this.playerCharacter.height, this.playerCharacter.width);
         try{
             
